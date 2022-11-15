@@ -1,0 +1,11 @@
+[AWS]
+52.21.252.144
+
+[all:vars]
+ansible_user=root
+ansible_ssh_pass=Sks#0987654321
+
+ansible_connection=ssh
+ansible_ssh_host=52.21.252.144
+ansible_user=ec2-user
+ansible_ssh_private_key_file=/root/AWSDevOpsTrng.pem

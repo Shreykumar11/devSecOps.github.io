@@ -1,0 +1,77 @@
+---
+- name: AWS Sample Book
+  hosts: AWS
+  remote_user: ec2-user
+  become: true
+  tasks:
+  - name: Update system packages & yum-utils
+    yum:
+      name: yum-utils
+      state: present
+      update_only: yes
+    tags:
+      - update
+
+  - name: Install Docker
+    yum:
+      name: docker
+      state: present
+    notify:
+      - Restart docker
+    tags:
+      - docker
+
+  - name: Install Java
+    yum:
+      name: java-11
+      state: present
+    tags:
+      - java11
+
+  - name: Make a Tomcat directory
+    file:
+      path: /opt/tomcat9
+      state: directory
+
+  - name: download & unarchive tomcat9
+    unarchive:
+      src: https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.62/bin/apache-tomcat-9.0.62.tar.gz
+      dest: /opt/tomcat9
+      remote_src: yes
+      extra_opts: [--strip-components=1]
+    tags:
+      - tomcat9
+
+  - name: Start tomcat
+    command: /opt/tomcat/bin/./startup.sh
+    register: myoutput
+    changed_when: myoutput.rc != 0
+    tags:
+      - start
+
+  - name: Copy war file to tomcat
+    copy:
+      src: /var/lib/jenkins/workspace/DevSecOps-Pipeline/Assignment1/JavaController/target/JavaController-0.0.1-SNAPSHOT.war
+      dest: /opt/tomcat/webapps/
+    tags:
+      - war
+
+  #- name: Adding terraform(Hashicorp) repo to yum-config-manager
+  #  command: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+  #  register: myoutput
+  #  changed_when: myoutput.rc != 0
+  #  tags:
+  #    - terraform
+
+  #- name: Install Terraform
+  #  yum:
+  #    name: terraform
+  #    state: present
+  #  tags:
+  #    - terraform
+
+  handlers:
+    - name: Restart docker
+      service:
+         name: docker
+         state: restarted
