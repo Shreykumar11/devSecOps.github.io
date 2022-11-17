@@ -13,9 +13,9 @@ public class MyFirstJavaController {
 	
 	@GetMapping("/")
 	public String greet() {
-		var1 = "Hello, Welcome To My World !!";
-		var2 = "Yess!! I have successfully deployed my web application. This is my first java web application :)";
-		var3 = "~ Shrey Kumar Saxena";
+		String var1 = "Hello, Welcome To My World !!";
+		String var2 = "Yess!! I have successfully deployed my web application. This is my first java web application :)";
+		String var3 = "~ Shrey Kumar Saxena";
 		return "\t\t\t\t" + var1 + "\n\n" + var2 + "\n\n\t\t\t\t\t\t" + var3;
 	}
 	
